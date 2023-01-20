@@ -32,7 +32,7 @@ class RecupDataAll:
                 if j['year'] not in list_years:
                     list_years.append(j['year'])
         return list_years
-    
+
     def recup_activity_sectors(self):
         list_sectors = []
 
@@ -66,7 +66,7 @@ class RecupDataAll:
         dataframe = dataframe.loc[(dataframe['year'] == choice_year), :].reset_index()
 
         self.view_search.convert_dataframe_to_html(dataframe)
-    
+
     def recup_data_companys_with_sector(self):
         """Recuperer le secteur depuis la vue pour filtrer"""
         choice_sector = self.view_search.show_sectors_activity_view(self.recup_activity_sectors())
@@ -75,14 +75,30 @@ class RecupDataAll:
             choice_sector = self.view_search.show_sectors_activity_view(self.recup_activity_sectors())
 
         choice_year = self.view_search.show_years_activity_view(self.recup_activity_years())
+
         while choice_year not in self.recup_activity_years():
             self.view_search.error_msg()
             choice_year = self.view_search.show_years_activity_view(self.recup_activity_years())
-            
+
         dataframe = self.create_dataframe()
 
         dataframe = dataframe.loc[
             ((dataframe['sector'] == self.recup_activity_sectors()[choice_sector]) & (dataframe['year'] == choice_year)), :
-                ].reset_index()
+        ].reset_index()
 
         self.view_search.convert_dataframe_to_html(dataframe)
+
+    def result_table(self):
+
+        dataframe = pd.json_normalize(
+            self.recup_json_data(), 
+            record_path = ['results'],
+            meta = ['name']
+        )
+        dataframe_2016 = dataframe.loc[(dataframe['year'] == 2016), :]
+        dataframe_2017 = dataframe.loc[(dataframe['year'] == 2017), :]
+
+        result = pd.merge(dataframe_2016[['name','year', 'ca']], dataframe_2017[['name','year', 'ca']], on="name")
+        result['Croissance CA en %'] = (result['ca_y'] - result['ca_x'])/result['ca_x']*100
+
+        self.view_search.convert_dataframe_to_html(result)

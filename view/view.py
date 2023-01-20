@@ -11,6 +11,7 @@ class CompanyView:
         print("[1] - All")
         print("[2] - Year")
         print("[3] - Sector")
+        print("[4] - TEST")
         return int(input("\nEnter your choice: "))
 
     def show_years_activity_view(self, list_years):
@@ -29,16 +30,16 @@ class CompanyView:
         print('\n************** INCORRECTLY ENTERED **************')
 
     def display_dataframe(self, dataframe):
-        dataframe.columns = [i.upper() for i in dataframe.columns]
-        dataframe['NAME'] = dataframe['NAME'].str.upper()
-        liste_head = [
-                    'name', 'sector', 'siren',
-                    'year', 'ca', 'margin', 'ebitda',
-                    'loss'
-        ]
-        dataframe = dataframe[
-                            list(map(str.upper, liste_head))
-        ]
+        # dataframe.columns = [i.upper() for i in dataframe.columns]
+        # dataframe['NAME'] = dataframe['NAME'].str.upper()
+        # liste_head = [
+        #             'name', 'sector', 'siren',
+        #             'year', 'ca', 'margin', 'ebitda',
+        #             'loss'
+        # ]
+        # dataframe = dataframe[
+        #                     list(map(str.upper, liste_head))
+        # ]
         return dataframe
 
     def convert_dataframe_to_html(self, dataframe):
