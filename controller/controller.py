@@ -70,6 +70,7 @@ class RecupDataAll:
     def recup_data_companys_with_sector(self):
         """Recuperer le secteur depuis la vue pour filtrer"""
         choice_sector = self.view_search.show_sectors_activity_view(self.recup_activity_sectors())
+
         while choice_sector not in range(len(self.recup_activity_sectors())):
             self.view_search.error_msg()
             choice_sector = self.view_search.show_sectors_activity_view(self.recup_activity_sectors())
@@ -88,17 +89,27 @@ class RecupDataAll:
 
         self.view_search.convert_dataframe_to_html(dataframe)
 
-    def result_table(self):
+    def compare_ca(self):
+        """Création de la colonne croissance ca en %  """
+        year = self.view_search.show_revenue_growth()
+
+        while year[0] not in self.recup_activity_years() or year[1] not in self.recup_activity_years():
+            self.view_search.error_msg()
+            year = self.view_search.show_revenue_growth()
 
         dataframe = pd.json_normalize(
-            self.recup_json_data(), 
-            record_path = ['results'],
-            meta = ['name']
+            self.recup_json_data(),
+            record_path=['results'],
+            meta=['name', 'sector']
         )
-        dataframe_2016 = dataframe.loc[(dataframe['year'] == 2016), :]
-        dataframe_2017 = dataframe.loc[(dataframe['year'] == 2017), :]
 
-        result = pd.merge(dataframe_2016[['name','year', 'ca']], dataframe_2017[['name','year', 'ca']], on="name")
-        result['Croissance CA en %'] = (result['ca_y'] - result['ca_x'])/result['ca_x']*100
+        dataframe_year1 = dataframe.loc[(dataframe['year'] == year[0]), :]
+        dataframe_year2 = dataframe.loc[(dataframe['year'] == year[1]), :]
 
+        result = pd.merge(
+            dataframe_year1[['name', 'sector', 'year', 'ca']],
+            dataframe_year2[['name', 'year', 'ca']], on="name"
+        )
+
+        result['Croissance CA en %'] = round(((result['ca_y'] - result['ca_x'])/result['ca_x']*100), 2)
         self.view_search.convert_dataframe_to_html(result)

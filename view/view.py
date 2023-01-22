@@ -11,7 +11,7 @@ class CompanyView:
         print("[1] - All")
         print("[2] - Year")
         print("[3] - Sector")
-        print("[4] - TEST")
+        print("[4] - COMPARATEUR CA")
         return int(input("\nEnter your choice: "))
 
     def show_years_activity_view(self, list_years):
@@ -26,20 +26,30 @@ class CompanyView:
             print(f'{j} - {i}')
         return int(input("CHOOSE THE SECTOR NUMBER: "))
 
+    def show_revenue_growth(self):
+        print("Choose from which year to which year")
+        year1 = int(input("DE L'ANNEE:"))
+        year2 = int(input("A L'ANNEE:"))
+        return year1, year2
+
     def error_msg(self):
         print('\n************** INCORRECTLY ENTERED **************')
 
     def display_dataframe(self, dataframe):
-        # dataframe.columns = [i.upper() for i in dataframe.columns]
-        # dataframe['NAME'] = dataframe['NAME'].str.upper()
-        # liste_head = [
-        #             'name', 'sector', 'siren',
-        #             'year', 'ca', 'margin', 'ebitda',
-        #             'loss'
-        # ]
-        # dataframe = dataframe[
-        #                     list(map(str.upper, liste_head))
-        # ]
+
+        liste_head_dataframe = ['ca', 'margin', 'ebitda', 'loss', 'year', 'name', 'sector', 'siren']
+
+        if liste_head_dataframe == list(dataframe.columns):
+            dataframe.columns = [i.upper() for i in dataframe.columns]
+            dataframe['NAME'] = dataframe['NAME'].str.upper()
+            liste_head = [
+                        'name', 'sector', 'siren',
+                        'year', 'ca', 'margin', 'ebitda',
+                        'loss'
+            ]
+            dataframe = dataframe[
+                                list(map(str.upper, liste_head))
+            ]
         return dataframe
 
     def convert_dataframe_to_html(self, dataframe):

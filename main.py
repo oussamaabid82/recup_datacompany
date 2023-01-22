@@ -13,6 +13,6 @@ def search():
 
     if start_view == 3:
         recup_data.recup_data_companys_with_sector()
-    
+
     if start_view == 4:
-        recup_data.result_table()
+        recup_data.compare_ca()
